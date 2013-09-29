@@ -3,7 +3,7 @@ package neo4j
 import "encoding/json"
 
 type Cypher struct {
-	Query   map[string]string
+	Query   map[string]interface{}
 	Payload []*NodeResponse
 }
 
