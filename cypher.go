@@ -8,8 +8,8 @@ type Cypher struct {
 }
 
 type CypherResponse struct {
-	Columns map[string]interface{} `json:"columns"`
-	Data    map[string]interface{} `json:"data"`
+	Columns map[string]interface{}   `json:"columns"`
+	Data    []map[string]interface{} `json:"data"`
 }
 
 func (c *Cypher) mapBatchResponse(neo4j *Neo4j, data interface{}) (bool, error) {
@@ -40,19 +40,23 @@ func (c *Cypher) decodeResponse(data string) ([]*NodeResponse, error) {
 		return nil, err
 	}
 
-	columnData := resp["data"].([]interface{})[0]
+	nodeResponses := make([]*NodeResponse, 0)
+	// Iterate through top level "data" array and append each NodeResponse to nodeResponses slice
+	for _, v := range resp["data"].([]interface{}) {
+		columnData := v.([]interface{})[0]
+		jsonColumnData, err := json.Marshal(columnData)
+		if err != nil {
+			return nil, err
+		}
 
-	jsonColumnData, err := json.Marshal(columnData)
-	if err != nil {
-		return nil, err
+		n := &NodeResponse{}
+		err = json.Unmarshal(jsonColumnData, &n)
+		if err != nil {
+			return nil, err
+		}
+
+		nodeResponses = append(nodeResponses, n)
 	}
 
-	res := make([]*NodeResponse, 0)
-
-	err = json.Unmarshal(jsonColumnData, &res)
-	if err != nil {
-		return nil, err
-	}
-
-	return res, nil
+	return nodeResponses, nil
 }
