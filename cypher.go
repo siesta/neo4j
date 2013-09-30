@@ -8,8 +8,8 @@ type Cypher struct {
 }
 
 type CypherResponse struct {
-	Columns map[string]interface{}   `json:"columns"`
-	Data    []map[string]interface{} `json:"data"`
+	Columns map[string]interface{} `json:"columns"`
+	Data    map[string]interface{} `json:"data"`
 }
 
 func (c *Cypher) mapBatchResponse(neo4j *Neo4j, data interface{}) (bool, error) {
