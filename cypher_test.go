@@ -38,11 +38,11 @@ func TestSendCypherCreateWithLabel(t *testing.T) {
 		t.Error("Wrong number of results")
 	}
 
-	for i := range cypher.Payload {
-		id := int(cypher.Payload[i].Data["testid"].(float64))
+	for i, v := range cypher.Payload {
+		id := int(v.Data["testid"].(float64))
 		if id != (i + 1) {
 			t.Error("Wrong results returned")
-			log.Println(cypher.Payload[i].Data)
+			log.Println(v.Data)
 		}
 	}
 }
@@ -71,12 +71,12 @@ func TestSendCypherQuery(t *testing.T) {
 		t.Error("Wrong number of results")
 	}
 
-	for i := range cypher.Payload {
-		id := int(cypher.Payload[i].Data["testid"].(float64))
+	for i, v := range cypher.Payload {
+		id := int(v.Data["testid"].(float64))
 		// ids should be in DESC order 3, 2, 1
 		if id != (3 - i) {
 			t.Error("Wrong results returned")
-			log.Println(cypher.Payload[i].Data)
+			log.Println(v.Data)
 		}
 	}
 }
