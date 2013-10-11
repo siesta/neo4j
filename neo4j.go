@@ -7,6 +7,8 @@ import (
 type Neo4j struct {
 	Client          *http.Client
 	BaseUrl         string
+	Username        string
+	Password        string
 	NodeUrl         string
 	BatchUrl        string
 	RelationshipUrl string
@@ -34,8 +36,11 @@ type Neo4j struct {
 //
 //     http://127.0.0.1:7474
 //
+// Auth credentials for http basic auth are optional.
+// They should be passed in the form of username, password.
+//
 // TODO implement cluster connection
-func Connect(url string) *Neo4j {
+func Connect(url string, auth ...string) *Neo4j {
 	if url == "" {
 		url = "http://127.0.0.1:7474"
 	}
@@ -43,9 +48,23 @@ func Connect(url string) *Neo4j {
 	baseUrl := url + "/db/data"
 	// TODO get neo4j service root from neo4j itself
 	// http://docs.neo4j.org/chunked/stable/rest-api-service-root.html
+
+	username := ""
+	password := ""
+	for i, v := range auth {
+		switch i {
+		case 0:
+			username = v
+		case 1:
+			password = v
+		}
+	}
+
 	return &Neo4j{
 		Client:          http.DefaultClient,
 		BaseUrl:         baseUrl,
+		Username:        username,
+		Password:        password,
 		NodeUrl:         baseUrl + "/node",
 		BatchUrl:        baseUrl + "/batch",
 		IndexNodeUrl:    baseUrl + "/index/node",

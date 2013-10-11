@@ -56,6 +56,10 @@ func (neo4j *Neo4j) doRequest(requestType, url, data string) (string, error) {
 		return "", err
 	}
 
+	if neo4j.Username != "" && neo4j.Password != "" {
+		req.SetBasicAuth(neo4j.Username, neo4j.Password)
+	}
+
 	// Neo4j uses json while communicating
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
