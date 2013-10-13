@@ -114,6 +114,10 @@ func (neo4j *Neo4j) doBatchRequest(requestType, url, data string) (string, error
 		return "", err
 	}
 
+	if neo4j.Username != "" && neo4j.Password != "" {
+		req.SetBasicAuth(neo4j.Username, neo4j.Password)
+	}
+
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 
